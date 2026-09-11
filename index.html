@@ -1,0 +1,1222 @@
+<!doctype html>
+<html lang="zh-TW" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>《手機商攝與 影像創作》第五週隨堂實作手冊 - AI 商用配樂與15秒影音升級</title>
+    <meta name="description" content="手機商攝與影像創作第五週隨堂實作手冊：商品專屬 AI 配樂 Prompt 產生器與 15 秒影音升級指南，支援一鍵複製、客製混音計算、互動檢核表與 CSV/PDF 匯出。" />
+    <meta property="og:title" content="《手機商攝與 影像創作》第五週隨堂實作手冊" />
+    <meta property="og:description" content="商品專屬 AI 配樂 Prompt 產生器與 15 秒影音升級指南 - Massively Style" />
+    <meta property="og:type" content="website" />
+
+    <!-- Google Fonts: Merriweather + Plus Jakarta Sans + Noto Sans TC for Massively Editorial Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&family=Noto+Sans+TC:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Merriweather"', 'Georgia', 'serif'],
+              sans: ['"Noto Sans TC"', '"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+              mono: ['"Space Mono"', 'ui-monospace', 'Menlo', 'monospace'],
+            },
+            colors: {
+              // HTML5 UP Massively Signature Palette
+              charcoal: {
+                950: '#0e1115',
+                900: '#14181d',
+                850: '#181e25',
+                800: '#1e252d', // Massively body dark background
+                700: '#212931', // Massively card dark / nav header
+                600: '#2d3742',
+                500: '#3e4a57',
+                400: '#637381',
+                300: '#94a3b8',
+                200: '#cbd5e1',
+                100: '#e2e8f0',
+                50: '#f1f5f9',
+              },
+              massively: {
+                accent: '#18bfef', // Massively iconic electric cyan
+                accentHover: '#11a4cf',
+                gold: '#f4793e',   // Massively warm coral / amber accent
+                goldHover: '#e06328',
+              }
+            },
+            letterSpacing: {
+              'widest-plus': '0.25em',
+              'massively': '0.18em',
+            }
+          }
+        }
+      }
+    </script>
+
+    <!-- html2pdf.js for one-click high-fidelity PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Canvas-confetti for celebratory feedback -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+      /* HTML5 UP Massively Canvas Atmosphere */
+      body {
+        background-color: #1e252d;
+        background-image: 
+          radial-gradient(circle at 50% 0%, rgba(37, 46, 56, 0.7) 0%, rgba(20, 24, 29, 0.95) 100%),
+          repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15) 1px, transparent 1px, transparent 2px);
+        background-size: 100% 100%, 100% 4px;
+        color: #212931;
+      }
+
+      /* Massively Classic Boxed Buttons */
+      .btn-massively {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Noto Sans TC", "Plus Jakarta Sans", sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        padding: 0.65rem 1.4rem;
+        border: 2px solid #212931;
+        background-color: transparent;
+        color: #212931;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+        border-radius: 0px;
+      }
+      .btn-massively:hover {
+        background-color: #212931;
+        color: #ffffff;
+      }
+      .btn-massively-primary {
+        background-color: #212931;
+        color: #ffffff;
+        border: 2px solid #212931;
+      }
+      .btn-massively-primary:hover {
+        background-color: #18bfef;
+        border-color: #18bfef;
+        color: #ffffff;
+      }
+      .btn-massively-accent {
+        background-color: #f4793e;
+        color: #ffffff;
+        border: 2px solid #f4793e;
+      }
+      .btn-massively-accent:hover {
+        background-color: #e06328;
+        border-color: #e06328;
+        color: #ffffff;
+      }
+      .btn-massively-cyan {
+        background-color: #18bfef;
+        color: #ffffff;
+        border: 2px solid #18bfef;
+      }
+      .btn-massively-cyan:hover {
+        background-color: #11a4cf;
+        border-color: #11a4cf;
+        color: #ffffff;
+      }
+
+      /* Massively Nav Tab active style */
+      .nav-tab-active {
+        background-color: #ffffff !important;
+        color: #212931 !important;
+        border-top: 3px solid #18bfef;
+      }
+
+      /* Print-optimized styling for PDF export */
+      @media print {
+        body {
+          background: #ffffff !important;
+          background-image: none !important;
+          color: #14181d !important;
+          font-size: 10pt !important;
+        }
+        #intro-hero, #nav, .no-print, #toast-container, .export-group, #footer {
+          display: none !important;
+        }
+        #main {
+          margin: 0 !important;
+          padding: 0 !important;
+          max-width: 100% !important;
+          box-shadow: none !important;
+          border: none !important;
+        }
+        .page-break-before {
+          page-break-before: always !important;
+        }
+        .print-card {
+          box-shadow: none !important;
+          border: 1px solid #cbd5e1 !important;
+          page-break-inside: avoid !important;
+        }
+        .print-table {
+          width: 100% !important;
+          border-collapse: collapse !important;
+        }
+        .print-table th, .print-table td {
+          border: 1px solid #cbd5e1 !important;
+          padding: 6px 8px !important;
+        }
+      }
+
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 9px;
+        height: 9px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #181e25;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #3e4a57;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #18bfef;
+      }
+    </style>
+  </head>
+  <body class="antialiased min-h-screen flex flex-col selection:bg-massively-accent selection:text-white">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- ==========================================
+         MASSIVELY INTRO HERO HEADER
+         ========================================== -->
+    <header id="intro-hero" class="relative z-10 pt-16 pb-14 px-4 sm:px-6 text-center text-white flex flex-col items-center justify-center max-w-4xl mx-auto">
+      <!-- Category Tag -->
+      <div class="inline-block mb-3">
+        <span class="text-xs sm:text-sm font-bold tracking-widest-plus text-massively-accent uppercase">
+          WEEK 05 PRACTICAL MANUAL • AI AUDIO PRODUCTION
+        </span>
+      </div>
+
+      <!-- Grand Title in Massively Style -->
+      <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-wider text-white uppercase font-sans leading-tight mt-1 mb-6 drop-shadow-md">
+        手機商攝與影像創作
+      </h1>
+
+      <!-- Editorial Subtitle with Massively Top/Bottom Borders -->
+      <div class="w-full max-w-2xl border-y border-white/20 py-4 px-3 mb-8">
+        <p class="text-xs sm:text-sm md:text-base text-charcoal-200 tracking-massively uppercase font-medium leading-relaxed">
+          商品專屬 AI 配樂 Prompt 產生器 ＆ 15 秒短影音升級指南
+        </p>
+      </div>
+
+      <!-- Intro Mission Brief -->
+      <p class="text-xs sm:text-sm text-charcoal-300 max-w-xl leading-relaxed mb-8">
+        告別 YouTube 罐頭配樂！利用前三週建立的商品特色，自創專屬 AI 商業 BGM，透過螢幕錄影無痛提取音訊，替換並升級第四週 15 秒短影片，為下週綜合大考備齊武器庫！
+      </p>
+
+      <!-- Downward Scroll Arrow in Massively Signature Style -->
+      <a href="#nav" class="inline-flex items-center justify-center w-12 h-12 rounded-full border-2 border-white/30 text-white hover:border-massively-accent hover:text-massively-accent hover:scale-105 transition-all duration-300 group shadow-lg" title="前往主導覽與手冊內容">
+        <svg class="w-5 h-5 transform group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+        </svg>
+      </a>
+    </header>
+
+    <!-- ==========================================
+         MASSIVELY SIGNATURE NAVIGATION BAR (#nav)
+         ========================================== -->
+    <nav id="nav" class="sticky top-0 z-40 bg-charcoal-850/98 backdrop-blur-md border-y border-charcoal-700 shadow-xl">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="flex items-center justify-between min-h-[54px] gap-2">
+
+          <!-- Left: Tab navigation links with active state indicator -->
+          <div class="flex items-center overflow-x-auto no-scrollbar text-xs font-bold tracking-massively uppercase py-0.5">
+            <a href="#step-1" class="px-3.5 sm:px-4 py-3.5 text-charcoal-200 hover:text-white hover:bg-charcoal-800 transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-massively-accent">
+              01 對照表
+            </a>
+            <a href="#step-2" class="px-3.5 sm:px-4 py-3.5 text-charcoal-200 hover:text-white hover:bg-charcoal-800 transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-massively-accent">
+              02 PROMPT
+            </a>
+            <a href="#custom-prompt-builder" class="px-3.5 sm:px-4 py-3.5 text-charcoal-200 hover:text-white hover:bg-charcoal-800 transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-massively-accent">
+              客製公式
+            </a>
+            <a href="#step-3" class="px-3.5 sm:px-4 py-3.5 text-charcoal-200 hover:text-white hover:bg-charcoal-800 transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-massively-accent">
+              03 取音4步
+            </a>
+            <a href="#step-4" class="px-3.5 sm:px-4 py-3.5 text-charcoal-200 hover:text-white hover:bg-charcoal-800 transition-colors whitespace-nowrap border-b-2 border-transparent hover:border-massively-accent">
+              04 混音驗收
+            </a>
+          </div>
+
+          <!-- Right: Massively Action Buttons (CSV & PDF) -->
+          <div class="flex items-center gap-2 shrink-0 py-1.5">
+            <!-- CSV Download Button -->
+            <button id="btn-export-csv" onclick="exportToCSV()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-2xs sm:text-xs font-bold tracking-massively uppercase text-white bg-transparent hover:bg-charcoal-700 border border-charcoal-500 hover:border-white transition-all rounded-none cursor-pointer" title="匯出 CSV 表格檔案">
+              <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              <span class="hidden md:inline">匯出 CSV</span>
+              <span class="md:hidden">CSV</span>
+            </button>
+
+            <!-- PDF Download Button -->
+            <button id="btn-export-pdf" onclick="exportToPDF()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-2xs sm:text-xs font-bold tracking-massively uppercase text-white bg-massively-accent hover:bg-massively-accentHover border border-massively-accent transition-all rounded-none shadow-sm cursor-pointer" title="下載完整實作手冊 PDF">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+              <span>下載 PDF</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </nav>
+
+    <!-- ==========================================
+         MASSIVELY MAIN CARD CONTAINER (#main)
+         A massive clean white article container 
+         resting on top of the dark backdrop
+         ========================================== -->
+    <main id="manual-content" class="w-full max-w-6xl mx-auto bg-white shadow-2xl my-6 sm:my-10 px-5 sm:px-10 md:px-14 lg:px-16 py-10 sm:py-14 space-y-16 border-t-8 border-charcoal-700 flex-1">
+
+      <!-- ==========================================
+           STEP 1: MOOD & VISUAL TRANSLATION TABLE
+           ========================================== -->
+      <section id="step-1" class="space-y-6 pb-12 border-b-2 border-charcoal-100">
+        <!-- Section Header -->
+        <div class="space-y-2">
+          <span class="block text-xs font-bold tracking-widest-plus text-charcoal-400 uppercase">
+            STEP 01 / TRANSLATION MATRIX
+          </span>
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-charcoal-900 font-sans uppercase">
+            🧭 商品視覺風格 ➔ AI 音樂情緒「直覺轉譯對照表」
+          </h2>
+          <p class="text-xs sm:text-sm text-charcoal-600">
+            <strong>對齊記憶：</strong>想想你第三週拍的「封面照、賣點照、促銷照」是什麼氣質？找到自己今天帶來的商品：
+          </p>
+        </div>
+
+        <!-- Filter & Search Controls in Massively Boxy Style -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-charcoal-50 p-4 border border-charcoal-200">
+          <div class="flex items-center gap-2 flex-1 max-w-md">
+            <div class="relative w-full">
+              <input
+                type="text"
+                id="search-table-input"
+                placeholder="搜尋商品名稱、樂器或風格關鍵字..."
+                class="w-full pl-9 pr-3 py-2 text-xs bg-white border-2 border-charcoal-300 rounded-none focus:outline-none focus:border-charcoal-900 text-charcoal-900 font-medium"
+                oninput="filterProductsTable()"
+              />
+              <svg class="w-4 h-4 text-charcoal-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            <button onclick="resetTableFilter()" class="btn-massively py-2 px-3 text-2xs shrink-0">
+              重設
+            </button>
+          </div>
+          <div class="text-2xs sm:text-xs text-charcoal-500 font-mono">
+            共收錄 10 款代表性商品調性轉譯
+          </div>
+        </div>
+
+        <!-- Massively Styled Table -->
+        <div class="overflow-x-auto border-2 border-charcoal-800">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm print-table" id="products-table">
+            <thead>
+              <tr class="bg-charcoal-800 text-white font-bold tracking-massively uppercase text-2xs sm:text-xs border-b border-charcoal-700">
+                <th class="p-3.5 whitespace-nowrap w-12 text-center">序號</th>
+                <th class="p-3.5 whitespace-nowrap min-w-[140px]">商品名稱</th>
+                <th class="p-3.5 min-w-[210px]">核心情感與視覺特徵</th>
+                <th class="p-3.5 min-w-[190px]">建議音樂風格</th>
+                <th class="p-3.5 min-w-[210px]">核心樂器搭配</th>
+                <th class="p-3.5 whitespace-nowrap text-center min-w-[120px]">建議節奏</th>
+                <th class="p-3.5 whitespace-nowrap text-center no-print">快速操作</th>
+              </tr>
+            </thead>
+            <tbody id="products-table-body" class="divide-y divide-charcoal-200 bg-white text-charcoal-800">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           STEP 2: 10 MASTER PRODUCTS PROMPT COPY ZONE
+           ========================================== -->
+      <section id="step-2" class="space-y-6 pb-12 border-b-2 border-charcoal-100">
+        <!-- Section Header -->
+        <div class="space-y-2">
+          <span class="block text-xs font-bold tracking-widest-plus text-charcoal-400 uppercase">
+            STEP 02 / PROMPT ARSENAL
+          </span>
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-charcoal-900 font-sans uppercase">
+            📝 【專屬 10 大商品 AI 配樂 Prompt 一鍵複製區】
+          </h2>
+        </div>
+
+        <!-- Massively Editorial Banner / Warning Card -->
+        <div class="bg-charcoal-900 text-white p-5 sm:p-6 border-l-4 border-massively-gold space-y-2 shadow-sm">
+          <div class="flex items-center gap-2">
+            <span class="text-massively-gold font-bold tracking-massively uppercase text-xs">COMMERCIAL PRINCIPLE</span>
+            <span class="text-charcoal-400">•</span>
+            <span class="text-xs text-charcoal-300 font-mono">Instrumental Mode Only</span>
+          </div>
+          <h3 class="text-base sm:text-lg font-bold text-white uppercase tracking-tight">
+            商業配樂黃金原則：嚴禁人聲歌唱干擾影片中的口播與旁白！
+          </h3>
+          <p class="text-xs sm:text-sm text-charcoal-300 leading-relaxed">
+            所有 Prompt 均已鎖定 <code class="px-2 py-0.5 bg-charcoal-800 text-massively-accent font-mono text-xs border border-charcoal-700">Instrumental, no vocals, no singing</code>（純音樂模式）。請在下方找到你的商品，點擊「一鍵複製」，貼入 <strong>Udio</strong> 或 <strong>Soundraw</strong> 即可直接生成！
+          </p>
+        </div>
+
+        <!-- External AI Tool Links -->
+        <div class="flex flex-wrap items-center gap-3 pt-1">
+          <span class="text-xs font-bold tracking-massively uppercase text-charcoal-500">快速前往音樂平台：</span>
+          <a href="https://www.udio.com" target="_blank" rel="noopener noreferrer" class="btn-massively py-1.5 px-3 text-2xs inline-flex items-center gap-1">
+            <span>Udio 官網</span>
+            <svg class="w-3 h-3 text-charcoal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+          </a>
+          <a href="https://soundraw.io" target="_blank" rel="noopener noreferrer" class="btn-massively py-1.5 px-3 text-2xs inline-flex items-center gap-1">
+            <span>Soundraw 官網</span>
+            <svg class="w-3 h-3 text-charcoal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+          </a>
+          <a href="https://suno.com" target="_blank" rel="noopener noreferrer" class="btn-massively py-1.5 px-3 text-2xs inline-flex items-center gap-1">
+            <span>Suno AI</span>
+            <svg class="w-3 h-3 text-charcoal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+          </a>
+        </div>
+
+        <!-- 10 Prompts Grid -->
+        <div id="prompts-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- ==========================================
+             CUSTOM PROMPT BUILDER (FORMULA PLAYGROUND)
+             ========================================== -->
+        <div id="custom-prompt-builder" class="mt-10 pt-10 border-t-2 border-charcoal-200 space-y-5">
+          <div class="space-y-1">
+            <span class="block text-xs font-bold tracking-widest-plus text-charcoal-400 uppercase">
+              FORMULA GENERATOR
+            </span>
+            <h3 class="text-lg sm:text-xl font-bold tracking-tight text-charcoal-900 font-sans uppercase">
+              🧩 自行客製填空公式（混搭兩種風格或自備獨特商品）
+            </h3>
+          </div>
+
+          <!-- Formula Representation Card -->
+          <div class="bg-charcoal-100 p-4 border border-charcoal-300 text-xs sm:text-sm font-mono text-charcoal-800 flex flex-wrap items-center gap-2">
+            <span class="bg-charcoal-800 text-white px-2 py-0.5 font-bold">Instrumental, no vocals,</span>
+            <span>+</span>
+            <span class="bg-white border border-charcoal-300 px-2 py-0.5 text-blue-700 font-bold">[曲風 Genre]</span>
+            <span>+</span>
+            <span class="bg-white border border-charcoal-300 px-2 py-0.5 text-emerald-700 font-bold">[核心樂器 Instruments]</span>
+            <span>+</span>
+            <span class="bg-white border border-charcoal-300 px-2 py-0.5 text-purple-700 font-bold">[商品氛圍 Mood]</span>
+            <span>+</span>
+            <span class="bg-white border border-charcoal-300 px-2 py-0.5 text-amber-700 font-bold">[速度 BPM]</span>
+          </div>
+
+          <!-- Interactive Form Controls -->
+          <div class="bg-charcoal-50 p-5 sm:p-6 border-2 border-charcoal-200 space-y-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <!-- Genre Selection -->
+              <div>
+                <label for="custom-genre" class="block text-xs font-bold tracking-massively uppercase text-charcoal-700 mb-1.5">
+                  1. 曲風 Genre
+                </label>
+                <select id="custom-genre" onchange="updateCustomPrompt()" class="w-full px-3 py-2 text-xs bg-white border-2 border-charcoal-300 rounded-none focus:outline-none focus:border-charcoal-900">
+                  <option value="cozy acoustic pop">Cozy Acoustic Pop (溫馨木吉他流行)</option>
+                  <option value="chill Lo-Fi beats">Chill Lo-Fi Beats (療癒慢放放鬆)</option>
+                  <option value="acoustic folk">Acoustic Folk (深情溫暖民謠)</option>
+                  <option value="playful chiptune 8-bit pop">Playful 8-Bit Chiptune (復古電玩跳躍)</option>
+                  <option value="fast cyberpunk electronic rock">Cyberpunk Electronic (科技熱血奔馳)</option>
+                  <option value="joyful modern folk fusion">Modern Folk Fusion (歡慶國風喜氣)</option>
+                  <option value="cinematic modern classical">Modern Classical Ambient (優雅極簡微奢)</option>
+                  <option value="whimsical acoustic pop">Whimsical Acoustic Pop (童趣靈巧手作)</option>
+                  <option value="cinematic documentary world folk">Cinematic World Folk (厚重匠心古法)</option>
+                  <option value="cozy coffeehouse acoustic jazz">Coffeehouse Acoustic Jazz (咖啡慢活舒適)</option>
+                </select>
+                <input type="text" id="custom-genre-input" placeholder="或自行輸入自訂曲風..." oninput="updateCustomPrompt()" class="mt-2 w-full px-2.5 py-1.5 text-xs bg-white border border-charcoal-300 rounded-none text-charcoal-800" />
+              </div>
+
+              <!-- Instruments Selection -->
+              <div>
+                <label for="custom-instruments" class="block text-xs font-bold tracking-massively uppercase text-charcoal-700 mb-1.5">
+                  2. 核心樂器 Instruments
+                </label>
+                <select id="custom-instruments" onchange="updateCustomPrompt()" class="w-full px-3 py-2 text-xs bg-white border-2 border-charcoal-300 rounded-none focus:outline-none focus:border-charcoal-900">
+                  <option value="bright acoustic guitar, warm gentle piano">Bright Acoustic Guitar, Gentle Piano (木吉他、暖鋼琴)</option>
+                  <option value="mellow electric piano, soft acoustic guitar">Mellow Keys, Chill Beats (電鋼琴、輕鼓點)</option>
+                  <option value="delicate fingerstyle guitar, warm cello">Fingerstyle Guitar, Warm Cello (指彈木吉他、大提琴)</option>
+                  <option value="retro video game synth, hand claps, upbeat drum">8-Bit Synth, Claps, Upbeat Drums (合成器、擊掌)</option>
+                  <option value="aggressive synth bassline, driving drums, metallic edge">Synth Bass, Driving Drums (重低音、金屬鼓點)</option>
+                  <option value="light acoustic guitar, bright traditional plucked strings">Light Guitar, Bamboo Flute (木吉他、清脆笛樂)</option>
+                  <option value="elegant minimalist piano, soft strings">Minimalist Piano, Soft Strings (清亮鋼琴、弦樂)</option>
+                  <option value="cheerful ukulele, bright glockenspiel, cute wooden percussion">Ukulele, Glockenspiel (烏克麗麗、鐵琴木魚)</option>
+                  <option value="deep acoustic drum, soulful cello, traditional flute">Deep Drum, Soulful Cello (大鼓、深沉木管)</option>
+                </select>
+                <input type="text" id="custom-instruments-input" placeholder="或自行輸入自訂樂器..." oninput="updateCustomPrompt()" class="mt-2 w-full px-2.5 py-1.5 text-xs bg-white border border-charcoal-300 rounded-none text-charcoal-800" />
+              </div>
+
+              <!-- Mood & Context Selection -->
+              <div>
+                <label for="custom-mood" class="block text-xs font-bold tracking-massively uppercase text-charcoal-700 mb-1.5">
+                  3. 商品氛圍 Mood & Context
+                </label>
+                <select id="custom-mood" onchange="updateCustomPrompt()" class="w-full px-3 py-2 text-xs bg-white border-2 border-charcoal-300 rounded-none focus:outline-none focus:border-charcoal-900">
+                  <option value="sweet and uplifting vibe, organic bakery commercial BGM, sunny afternoon tea time">甜蜜午後茶點 (Sweet, Uplifting, Bakery)</option>
+                  <option value="relaxing, peaceful, healing vibe, indoor green plant commercial BGM">療癒綠意放鬆 (Relaxing, Healing, Plant)</option>
+                  <option value="emotional, peaceful, handcraft wood carving commercial background music">手工工藝情感 (Emotional, Handcraft, Peaceful)</option>
+                  <option value="quirky and energetic, anime merchandise advertising BGM">調皮活力動漫 (Quirky, Energetic, Anime)</option>
+                  <option value="modern high-octane racing commercial background music">極限競速金屬 (High-Octane, Racing)</option>
+                  <option value="festive, cheerful, warm blessing commercial BGM">節慶祝福溫暖 (Festive, Warm Blessing)</option>
+                  <option value="sophisticated, luxury jewelry boutique commercial background music">精品穿搭微奢 (Sophisticated, Luxury Boutique)</option>
+                  <option value="playful, creative handicraft advertising BGM">創意童趣手作 (Playful, Creative Craft)</option>
+                  <option value="authentic, solemn, master craftsman traditional heritage BGM">古法匠心深邃 (Master Craftsman, Heritage)</option>
+                  <option value="relaxed, earthy, home lifestyle merchandise commercial BGM">居家慢活大地 (Relaxed, Earthy, Home)</option>
+                </select>
+                <input type="text" id="custom-mood-input" placeholder="或自行輸入自訂情境氛圍..." oninput="updateCustomPrompt()" class="mt-2 w-full px-2.5 py-1.5 text-xs bg-white border border-charcoal-300 rounded-none text-charcoal-800" />
+              </div>
+
+              <!-- BPM Slider in Massively Style -->
+              <div>
+                <div class="flex justify-between items-center mb-1.5">
+                  <label for="custom-bpm" class="text-xs font-bold tracking-massively uppercase text-charcoal-700">4. 節奏 BPM</label>
+                  <span id="bpm-display-val" class="text-xs font-mono font-bold text-white bg-charcoal-800 px-2 py-0.5">85 BPM</span>
+                </div>
+                <input
+                  type="range"
+                  id="custom-bpm"
+                  min="60"
+                  max="150"
+                  step="5"
+                  value="85"
+                  class="w-full h-2 bg-charcoal-300 appearance-none cursor-pointer accent-charcoal-900 mt-2"
+                  oninput="updateCustomPrompt()"
+                />
+                <div class="flex justify-between text-3xs text-charcoal-500 font-mono mt-1">
+                  <span>60 (慢活)</span>
+                  <span>90 (舒緩)</span>
+                  <span>120 (輕快)</span>
+                  <span>150 (極速)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Custom Prompt Live Preview Display -->
+            <div class="pt-2">
+              <span class="block text-xs font-bold tracking-massively uppercase text-charcoal-600 mb-2">即時客製英文 Prompt：</span>
+              <div class="p-4 bg-charcoal-900 text-massively-accent font-mono text-xs sm:text-sm border-2 border-charcoal-700 break-words">
+                <span id="custom-prompt-result">Instrumental, no vocals, cozy acoustic pop, bright acoustic guitar, warm gentle piano, sweet and uplifting vibe, organic bakery commercial BGM, sunny afternoon tea time, 85 BPM</span>
+              </div>
+              <div class="flex items-center justify-end gap-3 mt-3">
+                <button onclick="resetCustomBuilder()" class="btn-massively py-2 px-3 text-2xs">
+                  重設選單
+                </button>
+                <button onclick="copyCustomPrompt()" class="btn-massively-primary py-2 px-4 text-2xs">
+                  一鍵複製客製 PROMPT
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           STEP 3: SCREEN RECORDING TO AUDIO EXTRACTION
+           ========================================== -->
+      <section id="step-3" class="space-y-6 pb-12 border-b-2 border-charcoal-100">
+        <!-- Section Header -->
+        <div class="space-y-2">
+          <span class="block text-xs font-bold tracking-widest-plus text-charcoal-400 uppercase">
+            STEP 03 / AUDIO EXTRACTION WORKFLOW
+          </span>
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-charcoal-900 font-sans uppercase">
+            📲 手機無痛取得音樂 ——「螢幕錄影 ➔ 抽取音訊」4 步通關卡
+          </h2>
+          <p class="text-xs sm:text-sm text-charcoal-600">
+            <strong>悟哥密技：</strong>AI 平台不給免費下載 MP3 沒關係，我們用手機內建功能 30 秒無損搞定！
+          </p>
+        </div>
+
+        <!-- 4 Step Cards Grid in Massively Editorial Style -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <!-- Step 1 Card -->
+          <div class="bg-charcoal-50 p-5 border-2 border-charcoal-200 flex flex-col justify-between hover:border-charcoal-800 transition-colors space-y-3">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between border-b border-charcoal-200 pb-2">
+                <span class="text-xs font-mono font-bold tracking-widest text-charcoal-400">STAGE 01</span>
+                <span class="text-2xs font-bold text-white bg-charcoal-800 px-2 py-0.5">控制中心</span>
+              </div>
+              <h4 class="font-bold text-charcoal-900 text-base uppercase">開啟勿擾模式</h4>
+              <p class="text-xs text-charcoal-600 leading-relaxed">
+                手機下滑控制中心，打開<strong>「勿擾模式（月亮圖示）」</strong>，避免錄到 LINE 叮咚聲或來電通知。
+              </p>
+            </div>
+            <div class="pt-2 text-2xs text-charcoal-600 bg-white p-2.5 border border-charcoal-200 font-mono">
+              💡 提示：媒體音量開至 70%~80% 確保音訊飽滿。
+            </div>
+          </div>
+
+          <!-- Step 2 Card -->
+          <div class="bg-charcoal-50 p-5 border-2 border-charcoal-200 flex flex-col justify-between hover:border-charcoal-800 transition-colors space-y-3">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between border-b border-charcoal-200 pb-2">
+                <span class="text-xs font-mono font-bold tracking-widest text-charcoal-400">STAGE 02</span>
+                <span class="text-2xs font-bold text-white bg-charcoal-800 px-2 py-0.5">系統內建</span>
+              </div>
+              <h4 class="font-bold text-charcoal-900 text-base uppercase">啟動螢幕錄影</h4>
+              <p class="text-xs text-charcoal-600 leading-relaxed">
+                點開 Udio 剛做好的滿意音樂，開啟手機<strong>「螢幕錄影」</strong>，錄下 15~20 秒音樂播放畫面後停止。
+              </p>
+            </div>
+            <div class="pt-2 text-2xs text-charcoal-600 bg-white p-2.5 border border-charcoal-200 font-mono">
+              💡 提示：多錄 3 秒作為結尾淡出（Fade Out）餘裕。
+            </div>
+          </div>
+
+          <!-- Step 3 Card -->
+          <div class="bg-charcoal-50 p-5 border-2 border-charcoal-200 flex flex-col justify-between hover:border-charcoal-800 transition-colors space-y-3">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between border-b border-charcoal-200 pb-2">
+                <span class="text-xs font-mono font-bold tracking-widest text-charcoal-400">STAGE 03</span>
+                <span class="text-2xs font-bold text-white bg-charcoal-800 px-2 py-0.5">Videoleap</span>
+              </div>
+              <h4 class="font-bold text-charcoal-900 text-base uppercase">匯入剪輯專案</h4>
+              <p class="text-xs text-charcoal-600 leading-relaxed">
+                打開 <strong>Videoleap</strong>，開啟第四週的 15 秒短片專案，刪除原有的 YouTube 罐頭配樂軌。
+              </p>
+            </div>
+            <div class="pt-2 text-2xs text-charcoal-600 bg-white p-2.5 border border-charcoal-200 font-mono">
+              💡 提示：保留口播人聲主軌，確保對白清晰。
+            </div>
+          </div>
+
+          <!-- Step 4 Card -->
+          <div class="bg-charcoal-50 p-5 border-2 border-charcoal-200 flex flex-col justify-between hover:border-charcoal-800 transition-colors space-y-3">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between border-b border-charcoal-200 pb-2">
+                <span class="text-xs font-mono font-bold tracking-widest text-charcoal-400">STAGE 04</span>
+                <span class="text-2xs font-bold text-white bg-massively-accent px-2 py-0.5">一鍵抽音</span>
+              </div>
+              <h4 class="font-bold text-charcoal-900 text-base uppercase">影片擷取音訊</h4>
+              <p class="text-xs text-charcoal-600 leading-relaxed">
+                點<strong>「音訊 ➔ 影片擷取音訊（Extract Audio）」</strong>，選剛才的錄影檔，音訊直接無損入軌！
+              </p>
+            </div>
+            <div class="pt-2 text-2xs text-charcoal-600 bg-white p-2.5 border border-charcoal-200 font-mono">
+              💡 提示：完全免外轉檔網站，內建轉成獨立配樂軌！
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           STEP 4: 3-TRACK MIXING & 15-SEC SPEC
+           ========================================== -->
+      <section id="step-4" class="space-y-6 pb-12 border-b-2 border-charcoal-100">
+        <!-- Section Header -->
+        <div class="space-y-2">
+          <span class="block text-xs font-bold tracking-widest-plus text-charcoal-400 uppercase">
+            STEP 04 / MASTER AUDIO MIXING
+          </span>
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-charcoal-900 font-sans uppercase">
+            🎬 三軌黃金混音與 15 秒影音升級驗收
+          </h2>
+          <p class="text-xs sm:text-sm text-charcoal-600">
+            在 Videoleap 時間軸上完成三軌平衡，即可匯出今日成果：
+          </p>
+        </div>
+
+        <!-- Massively Dark Audio Console Board -->
+        <div class="bg-charcoal-850 text-white p-6 sm:p-8 border-2 border-charcoal-700 shadow-xl space-y-6">
+          <div class="flex items-center justify-between border-b border-charcoal-700 pb-3">
+            <span class="text-xs font-bold tracking-widest uppercase text-charcoal-400">AUDIO MIXER CONSOLE • 3-TRACK DASHBOARD</span>
+            <span class="text-2xs font-mono font-bold text-massively-accent bg-charcoal-900 px-2 py-0.5 border border-charcoal-700">COMMERCIAL GRADE</span>
+          </div>
+
+          <div class="space-y-5">
+            <!-- Track 1: Voiceover -->
+            <div class="bg-charcoal-900 p-4 border border-charcoal-700 space-y-2">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 bg-emerald-400 shrink-0"></span>
+                  <span class="text-sm font-bold uppercase tracking-tight text-white">1. 主導層（口播人聲 VOICEOVER）</span>
+                </div>
+                <span class="text-xs font-mono font-bold text-emerald-400 bg-charcoal-950 px-2 py-0.5 border border-emerald-900/60">音量鎖定 100%</span>
+              </div>
+              <div class="w-full bg-charcoal-800 h-2 overflow-hidden">
+                <div class="bg-emerald-400 h-full" style="width: 100%"></div>
+              </div>
+              <p class="text-xs text-charcoal-300">
+                主訴求清楚傳遞第四週電商文案，不可被背景音喧賓奪主。
+              </p>
+            </div>
+
+            <!-- Track 2: BGM Dynamics -->
+            <div class="bg-charcoal-900 p-4 border border-charcoal-700 space-y-3">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 bg-massively-accent shrink-0"></span>
+                  <span class="text-sm font-bold uppercase tracking-tight text-white">2. 基底層（自創 AI 音樂 BGM）</span>
+                </div>
+                <span class="text-xs font-mono font-bold text-massively-accent bg-charcoal-950 px-2 py-0.5 border border-charcoal-700">動態音量調控</span>
+              </div>
+
+              <!-- Two Comparison States -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <div class="bg-charcoal-950 p-3 border border-charcoal-800 space-y-1">
+                  <div class="flex justify-between items-center text-xs">
+                    <span class="text-charcoal-300 font-bold">🗣️ 有人聲口播時</span>
+                    <span class="font-mono font-bold text-massively-accent">20% ~ 25%</span>
+                  </div>
+                  <div class="w-full bg-charcoal-800 h-1.5">
+                    <div class="bg-massively-accent h-full" style="width: 25%"></div>
+                  </div>
+                  <span class="text-2xs text-charcoal-400 block">墊在口播後方，只襯托情緒與氛圍</span>
+                </div>
+
+                <div class="bg-charcoal-950 p-3 border border-charcoal-800 space-y-1">
+                  <div class="flex justify-between items-center text-xs">
+                    <span class="text-charcoal-300 font-bold">✨ 口播結束 / 純畫面定格</span>
+                    <span class="font-mono font-bold text-massively-accent">55% ~ 65%</span>
+                  </div>
+                  <div class="w-full bg-charcoal-800 h-1.5">
+                    <div class="bg-massively-accent h-full" style="width: 60%"></div>
+                  </div>
+                  <span class="text-2xs text-charcoal-400 block">微幅拉回飽滿感，強化商品視覺張力</span>
+                </div>
+              </div>
+
+              <div class="text-xs text-charcoal-300 bg-charcoal-950 p-2.5 border border-charcoal-800 flex items-center gap-2">
+                <span class="text-massively-gold font-bold">★ 關鍵設定：</span>
+                <span>影片最後 1 秒務必設定 <strong>「淡出（Fade Out）」</strong>，避免音樂突兀中斷。</span>
+              </div>
+            </div>
+
+            <!-- Subtitle 4 Stages & Export Specs -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              <!-- Subtitle 4 Stages -->
+              <div class="bg-charcoal-900 p-4 border border-charcoal-700 space-y-2">
+                <span class="text-xs font-bold tracking-tight uppercase text-white flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 bg-blue-400"></span>
+                  3. 重新校對 AI 字幕（4 階段金句結構）
+                </span>
+                <div class="flex flex-wrap gap-1 text-2xs font-mono pt-1">
+                  <span class="px-2 py-0.5 bg-charcoal-950 text-blue-300 border border-charcoal-700">① 破題</span>
+                  <span class="text-charcoal-500">➔</span>
+                  <span class="px-2 py-0.5 bg-charcoal-950 text-blue-300 border border-charcoal-700">② 觸感/賣點</span>
+                  <span class="text-charcoal-500">➔</span>
+                  <span class="px-2 py-0.5 bg-charcoal-950 text-blue-300 border border-charcoal-700">③ 陪伴</span>
+                  <span class="text-charcoal-500">➔</span>
+                  <span class="px-2 py-0.5 bg-charcoal-950 text-blue-300 border border-charcoal-700">④ 導購 CTA</span>
+                </div>
+              </div>
+
+              <!-- Export Specs -->
+              <div class="bg-charcoal-900 p-4 border border-charcoal-700 space-y-2">
+                <span class="text-xs font-bold tracking-tight uppercase text-white flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 bg-purple-400"></span>
+                  4. 成品匯出規格
+                </span>
+                <div class="flex items-center gap-2 pt-1">
+                  <span class="px-2.5 py-1 bg-charcoal-950 text-purple-300 text-xs font-mono font-bold border border-charcoal-700">
+                    1080p (FHD)
+                  </span>
+                  <span class="px-2.5 py-1 bg-charcoal-950 text-purple-300 text-xs font-mono font-bold border border-charcoal-700">
+                    30 fps
+                  </span>
+                  <span class="text-2xs text-charcoal-400">匯出至手機相簿備份</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           DOCUMENT EXPORT BAR
+           ========================================== -->
+      <section id="export-section" class="pt-4">
+        <!-- Document Export Bar -->
+        <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 export-group">
+          <div class="text-xs text-charcoal-500 text-center sm:text-left">
+            <p>※ 支援將實作紀錄、自訂 Prompt 與 10 大商品清單完整打包。</p>
+            <p>※ CSV 支援 UTF-8 BOM，在 Excel / Numbers 開啟不亂碼。</p>
+          </div>
+          <div class="flex flex-wrap items-center justify-center gap-3">
+            <button onclick="exportToCSV()" class="btn-massively py-2.5 px-4 text-xs inline-flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              <span>匯出為 CSV 檔案</span>
+            </button>
+            <button onclick="exportToPDF()" class="btn-massively-primary py-2.5 px-4 text-xs inline-flex items-center gap-2">
+              <svg class="w-4 h-4 text-massively-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+              <span>下載為 PDF 手冊</span>
+            </button>
+            <button onclick="downloadSelfHTML()" class="btn-massively py-2.5 px-3 text-xs inline-flex items-center gap-1.5" title="下載本單檔 index.html">
+              <svg class="w-4 h-4 text-charcoal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+              <span>單檔 HTML</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ==========================================
+         MASSIVELY SIGNATURE FOOTER (#footer)
+         ========================================== -->
+    <footer id="footer" class="bg-charcoal-900 text-charcoal-400 py-14 px-4 border-t-2 border-charcoal-700 text-center space-y-5">
+      <div class="max-w-4xl mx-auto space-y-4">
+        <!-- Back to Top Button -->
+        <div>
+          <a href="#intro-hero" class="btn-massively py-2 px-5 text-2xs text-white border-charcoal-600 hover:border-white hover:bg-white hover:text-charcoal-900 inline-block">
+            SCROLL TO TOP ↑ 回到頂部
+          </a>
+        </div>
+
+        <div class="space-y-1">
+          <p class="text-xs tracking-massively uppercase text-charcoal-300 font-bold">
+            《手機商攝與 影像創作》第五週隨堂實作手冊
+          </p>
+          <h3 class="text-base font-bold text-white tracking-wider">
+            Cine Dimension 維度影學
+          </h3>
+        </div>
+
+        <p class="text-2xs text-charcoal-400 max-w-md mx-auto leading-relaxed">
+          手機商攝、商業攝影與 AI 影音創作實戰教學，用鏡頭與 AI 賦能品牌視覺影響力。
+        </p>
+
+        <div class="pt-1">
+          <a href="https://cine-dimension.com/" target="_blank" rel="noopener noreferrer" class="text-2xs font-mono text-massively-accent hover:underline inline-flex items-center gap-1">
+            <span>官方網站：cine-dimension.com</span>
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+          </a>
+        </div>
+
+        <div class="text-3xs text-charcoal-600 font-mono pt-3 border-t border-charcoal-800">
+          © Cine Dimension 維度影學. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
+    <!-- ==========================================
+         CLIENT DATA LOGIC & INTERACTION ENGINE
+         ========================================== -->
+    <script>
+      // MASTER DATA: 10 Products Translation Matrix & Prompts
+      const PRODUCTS_DATA = [
+        {
+          id: "01",
+          name: "蜂蜜蛋糕",
+          category: "烘焙甜點",
+          features: "甜潤綿密、午後暖陽、一口融化 (切面氣孔、蜂蜜金黃流動感)",
+          genre: "Cozy Acoustic Pop, Sweet, Warm, Gentle",
+          instruments: "木吉他、輕柔鋼琴、溫暖沙鈴 (Acoustic Guitar, Warm Piano, Shaker)",
+          bpm: "80 ~ 90 BPM",
+          bpmNote: "甜美舒緩",
+          prompt: "Instrumental, no vocals, cozy acoustic pop, bright acoustic guitar, warm gentle piano, sweet and uplifting vibe, organic bakery commercial BGM, sunny afternoon tea time, 85 BPM"
+        },
+        {
+          id: "02",
+          name: "多肉植物",
+          category: "生活植栽",
+          features: "辦公室綠洲、放鬆治癒、生機盎然 (葉片飽滿肉質、水珠晨光照)",
+          genre: "Lo-Fi Chillhop, Organic, Peaceful, Relaxing",
+          instruments: "輕柔 Lo-Fi 節奏、木吉他、清脆水滴音效 (Mellow Keys, Chill Beats, Acoustic Guitar)",
+          bpm: "75 ~ 85 BPM",
+          bpmNote: "慢活療癒",
+          prompt: "Instrumental, no vocals, chill Lo-Fi beats, mellow electric piano, soft acoustic guitar, relaxing, peaceful, healing vibe, indoor green plant commercial BGM, 80 BPM"
+        },
+        {
+          id: "03",
+          name: "木雕作品 - 兔子",
+          category: "工藝擺件",
+          features: "父親手刻溫度、質樸誠懇、長久陪伴 (手工刀痕、天然原木細膩紋理)",
+          genre: "Acoustic Folk, Emotional, Warm, Earthy",
+          instruments: "指彈木吉他、大提琴、溫柔鋼琴 (Fingerstyle Acoustic Guitar, Cello, Piano)",
+          bpm: "70 ~ 80 BPM",
+          bpmNote: "深情溫暖",
+          prompt: "Instrumental, no vocals, acoustic folk, delicate fingerstyle guitar, warm cello, gentle piano, emotional, peaceful, handcraft wood carving commercial background music, 75 BPM"
+        },
+        {
+          id: "04",
+          name: "瑪利歐 - 庫巴吊飾",
+          category: "動漫文創",
+          features: "調皮搞怪、電玩復古、活潑多巴胺 (亮眼角色配色、隨身晃動感)",
+          genre: "Chiptune 8-Bit Pop, Playful, Quirky, Fun",
+          instruments: "復古 8-bit 電玩音效、輕快合成器、拍手聲 (8-bit Synth, Playful Beats, Hand Claps)",
+          bpm: "115 ~ 125 BPM",
+          bpmNote: "輕快跳躍",
+          prompt: "Instrumental, no vocals, playful chiptune 8-bit pop, retro video game synth, hand claps, upbeat drum groove, quirky and energetic, anime merchandise advertising BGM, 120 BPM"
+        },
+        {
+          id: "05",
+          name: "摩托賽車模型",
+          category: "精緻機械",
+          features: "引擎呼嘯、極限速度、金屬機械感 (排氣管金屬光、跑車流線車身)",
+          genre: "Modern Cyberpunk Electro, Fast, Driving, High Energy",
+          instruments: "強勁電子低音、金屬合成器、重拍鼓點 (Heavy Synth Bass, Driving Electronic Drums)",
+          bpm: "125 ~ 135 BPM",
+          bpmNote: "熱血奔馳",
+          prompt: "Instrumental, no vocals, fast cyberpunk electronic rock, aggressive synth bassline, driving drums, metallic edge, modern high-octane racing commercial background music, 130 BPM"
+        },
+        {
+          id: "06",
+          name: "可愛招財香包",
+          category: "民俗祝福",
+          features: "喜氣迎門、福氣滿滿、親切暖心 (刺繡紅金配色、過爐保平安)",
+          genre: "Joyful Traditional Folk Fusion, Festive, Uplifting",
+          instruments: "清脆笛音、輕快木質打擊、柔和琵琶、木吉他 (Light Acoustic Guitar, Bamboo Flute, Gentle Plucks)",
+          bpm: "95 ~ 105 BPM",
+          bpmNote: "歡喜輕快",
+          prompt: "Instrumental, no vocals, joyful modern folk fusion, light acoustic guitar, bright traditional plucked strings, festive, cheerful, warm blessing commercial BGM, 100 BPM"
+        },
+        {
+          id: "07",
+          name: "質感手飾品",
+          category: "精品穿搭",
+          features: "舉手投足的精緻、低調奢華、優雅自信 (金屬反光微距、佩戴靈動特寫)",
+          genre: "Elegant Neo-Classical Ambient, Sophisticated, Graceful",
+          instruments: "極簡清亮鋼琴、優雅小提琴弦樂襯底 (Minimalist Grand Piano, Delicate Strings)",
+          bpm: "75 ~ 85 BPM",
+          bpmNote: "優雅高級",
+          prompt: "Instrumental, no vocals, cinematic modern classical, elegant minimalist piano, soft strings, sophisticated, luxury jewelry boutique commercial background music, 80 BPM"
+        },
+        {
+          id: "08",
+          name: "吸管編織小蝸牛",
+          category: "童趣手作",
+          features: "巧思童趣、慢活哲學、繽紛靈巧 (吸管交疊細節、可愛緩慢爬行)",
+          genre: "Whimsical Light Acoustic, Cute, Cheerful, Quirky",
+          instruments: "清亮鐵琴、輕快烏克麗麗、木魚手鼓 (Glockenspiel, Ukulele, Light Wooden Percussion)",
+          bpm: "90 ~ 100 BPM",
+          bpmNote: "童趣靈動",
+          prompt: "Instrumental, no vocals, whimsical acoustic pop, cheerful ukulele, bright glockenspiel, cute wooden percussion, playful, creative handicraft advertising BGM, 95 BPM"
+        },
+        {
+          id: "09",
+          name: "手工古法製品",
+          category: "非遺工藝",
+          features: "時光沉澱、老祖宗智慧、匠心堅持 (古法熬煮/鍛打/手作繁複工序)",
+          genre: "Cinematic World Folk, Solemn, Soulful, Meditative",
+          instruments: "沉穩大鼓、古樸弦樂、深沉木管 (Deep Acoustic Percussion, Traditional Strings, Flute)",
+          bpm: "65 ~ 75 BPM",
+          bpmNote: "厚重深邃",
+          prompt: "Instrumental, no vocals, cinematic documentary world folk, deep acoustic drum, soulful cello, authentic, solemn, master craftsman traditional heritage BGM, 70 BPM"
+        },
+        {
+          id: "10",
+          name: "木刻作品 - 杯墊",
+          category: "生活器物",
+          features: "晨起第一杯茶的餘溫、餐桌儀式感 (幾何刻紋特寫、水杯放置質感)",
+          genre: "Cozy Coffeehouse BGM, Earthy, Calm, Organic",
+          instruments: "溫暖指彈木吉他、輕拍子、柔和低音 (Acoustic Guitar, Soft Upright Bass, Gentle Shaker)",
+          bpm: "80 ~ 90 BPM",
+          bpmNote: "生活舒適",
+          prompt: "Instrumental, no vocals, cozy coffeehouse acoustic jazz, warm fingerpicking guitar, subtle upright bass, relaxed, earthy, home lifestyle merchandise commercial BGM, 85 BPM"
+        }
+      ];
+
+      // Initialize on DOM Ready
+      document.addEventListener("DOMContentLoaded", () => {
+        renderProductsTable(PRODUCTS_DATA);
+        renderPromptsGrid();
+        updateCustomPrompt();
+      });
+
+      // Render Step 1 Translation Table
+      function renderProductsTable(items) {
+        const tbody = document.getElementById("products-table-body");
+        if (!tbody) return;
+
+        if (items.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" class="p-8 text-center text-charcoal-400">
+                找不到符合搜尋關鍵字的商品項目。
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = items.map(p => `
+          <tr class="hover:bg-charcoal-50 transition-colors">
+            <td class="p-3.5 text-center font-mono font-bold text-charcoal-400">${p.id}</td>
+            <td class="p-3.5 font-bold text-charcoal-900 whitespace-nowrap">
+              ${p.name}
+              <span class="block text-2xs font-normal text-charcoal-500 font-mono">(${p.category})</span>
+            </td>
+            <td class="p-3.5 text-charcoal-700 leading-relaxed">${p.features}</td>
+            <td class="p-3.5 font-medium text-charcoal-800">${p.genre}</td>
+            <td class="p-3.5 text-charcoal-600">${p.instruments}</td>
+            <td class="p-3.5 text-center whitespace-nowrap">
+              <span class="font-mono font-bold text-charcoal-900 bg-charcoal-100 px-2 py-0.5">${p.bpm}</span>
+              <span class="block text-2xs text-charcoal-500 mt-0.5">(${p.bpmNote})</span>
+            </td>
+            <td class="p-3.5 text-center no-print whitespace-nowrap">
+              <button 
+                onclick="copyText('${escapeQuote(p.prompt)}', 'btn-tbl-${p.id}')"
+                id="btn-tbl-${p.id}"
+                class="btn-massively py-1.5 px-2.5 text-2xs"
+                title="複製此商品的英文生成 Prompt"
+              >
+                複製 PROMPT
+              </button>
+            </td>
+          </tr>
+        `).join("");
+      }
+
+      // Filter Table Function
+      function filterProductsTable() {
+        const query = document.getElementById("search-table-input").value.toLowerCase().trim();
+        if (!query) {
+          renderProductsTable(PRODUCTS_DATA);
+          return;
+        }
+        const filtered = PRODUCTS_DATA.filter(p => {
+          return p.name.toLowerCase().includes(query) ||
+                 p.category.toLowerCase().includes(query) ||
+                 p.features.toLowerCase().includes(query) ||
+                 p.genre.toLowerCase().includes(query) ||
+                 p.instruments.toLowerCase().includes(query);
+        });
+        renderProductsTable(filtered);
+      }
+
+      function resetTableFilter() {
+        document.getElementById("search-table-input").value = "";
+        renderProductsTable(PRODUCTS_DATA);
+      }
+
+      // Render Step 2 Prompts Grid Cards
+      function renderPromptsGrid() {
+        const container = document.getElementById("prompts-grid");
+        if (!container) return;
+
+        container.innerHTML = PRODUCTS_DATA.map(p => `
+          <div class="bg-charcoal-50 p-5 border-2 border-charcoal-200 flex flex-col justify-between hover:border-charcoal-800 transition-colors space-y-3">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between border-b border-charcoal-200 pb-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-mono font-bold bg-charcoal-800 text-white px-2 py-0.5">${p.id}</span>
+                  <h4 class="font-bold text-charcoal-900 text-sm sm:text-base">${p.name}</h4>
+                </div>
+                <span class="text-2xs font-mono font-bold text-charcoal-500 bg-white px-2 py-0.5 border border-charcoal-200">${p.bpm}</span>
+              </div>
+              <p class="text-2xs text-charcoal-500 leading-snug">${p.features}</p>
+              <div class="bg-charcoal-900 text-charcoal-200 font-mono text-2xs sm:text-xs p-3.5 border border-charcoal-700 leading-relaxed break-words">
+                ${p.prompt}
+              </div>
+            </div>
+            <div class="pt-2 flex items-center justify-between gap-2 border-t border-charcoal-200">
+              <span class="text-3xs text-charcoal-400 font-mono">INSTRUMENTAL BGM</span>
+              <button 
+                onclick="copyText('${escapeQuote(p.prompt)}', 'btn-prompt-${p.id}')"
+                id="btn-prompt-${p.id}"
+                class="btn-massively-primary py-1.5 px-3 text-2xs"
+              >
+                一鍵複製 PROMPT
+              </button>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      // Custom Prompt Formula Engine
+      function updateCustomPrompt() {
+        const genreSelect = document.getElementById("custom-genre").value;
+        const genreCustom = document.getElementById("custom-genre-input").value.trim();
+        const genre = genreCustom || genreSelect;
+
+        const instSelect = document.getElementById("custom-instruments").value;
+        const instCustom = document.getElementById("custom-instruments-input").value.trim();
+        const instruments = instCustom || instSelect;
+
+        const moodSelect = document.getElementById("custom-mood").value;
+        const moodCustom = document.getElementById("custom-mood-input").value.trim();
+        const mood = moodCustom || moodSelect;
+
+        const bpm = document.getElementById("custom-bpm").value;
+        document.getElementById("bpm-display-val").textContent = `${bpm} BPM`;
+
+        const fullPrompt = `Instrumental, no vocals, ${genre}, ${instruments}, ${mood}, ${bpm} BPM`;
+        const resultEl = document.getElementById("custom-prompt-result");
+        if (resultEl) resultEl.textContent = fullPrompt;
+      }
+
+      function resetCustomBuilder() {
+        document.getElementById("custom-genre").selectedIndex = 0;
+        document.getElementById("custom-genre-input").value = "";
+        document.getElementById("custom-instruments").selectedIndex = 0;
+        document.getElementById("custom-instruments-input").value = "";
+        document.getElementById("custom-mood").selectedIndex = 0;
+        document.getElementById("custom-mood-input").value = "";
+        document.getElementById("custom-bpm").value = 85;
+        updateCustomPrompt();
+        showToast("已重設客製化公式選單");
+      }
+
+      function copyCustomPrompt() {
+        const text = document.getElementById("custom-prompt-result").textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          showToast("已成功複製客製 Prompt！可直接貼入 Udio / Soundraw");
+        }).catch(() => {
+          fallbackCopy(text);
+        });
+      }
+
+      // Copy Helper with Button State & Toast Feedback
+      function copyText(text, btnId) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast("已成功複製 Prompt 到剪貼簿！");
+          const btn = document.getElementById(btnId);
+          if (btn) {
+            const origHTML = btn.innerHTML;
+            btn.innerHTML = "已複製 ✓";
+            btn.classList.add("bg-emerald-700", "text-white");
+            setTimeout(() => {
+              btn.innerHTML = origHTML;
+              btn.classList.remove("bg-emerald-700", "text-white");
+            }, 1800);
+          }
+        }).catch(() => {
+          fallbackCopy(text);
+        });
+      }
+
+      function fallbackCopy(text) {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand("copy");
+          showToast("已複製到剪貼簿！");
+        } catch (err) {
+          showToast("複製失敗，請手動選取文字複製", "error");
+        }
+        document.body.removeChild(textarea);
+      }
+
+      function escapeQuote(str) {
+        return str.replace(/'/g, "\\'");
+      }
+
+      // Toast Notification Engine
+      function showToast(message, type = "success") {
+        const container = document.getElementById("toast-container");
+        if (!container) return;
+
+        const toast = document.createElement("div");
+        toast.className = `pointer-events-auto px-4 py-3 border-2 text-xs font-bold tracking-massively uppercase flex items-center gap-2 transform transition-all duration-300 translate-y-4 opacity-0 ${
+          type === "error"
+            ? "bg-red-950 text-white border-red-600"
+            : "bg-charcoal-900 text-white border-charcoal-600 shadow-2xl"
+        }`;
+        toast.innerHTML = `
+          <span class="text-massively-accent">${type === "error" ? "⚠️" : "✓"}</span>
+          <span>${message}</span>
+        `;
+        container.appendChild(toast);
+
+        requestAnimationFrame(() => {
+          toast.classList.remove("translate-y-4", "opacity-0");
+        });
+
+        setTimeout(() => {
+          toast.classList.add("opacity-0", "translate-y-2");
+          setTimeout(() => toast.remove(), 300);
+        }, 2800);
+      }
+
+      // Export to CSV Functionality (With UTF-8 BOM for Excel/Numbers)
+      function exportToCSV() {
+        const customPrompt = document.getElementById("custom-prompt-result") ? document.getElementById("custom-prompt-result").textContent : "";
+
+        let csv = "\uFEFF"; // UTF-8 BOM
+        csv += "《手機商攝與 影像創作》第五週隨堂實作手冊 - AI 配樂資料庫 (Cine Dimension Edition)\r\n";
+        csv += `匯出日期,${new Date().toLocaleDateString()}\r\n`;
+        csv += "\r\n";
+
+        csv += "【客製填空公式 Prompt 紀錄】\r\n";
+        csv += `客製公式 Prompt,${escapeCSV(customPrompt)}\r\n`;
+        csv += "\r\n";
+
+        csv += "【10 大商品直覺轉譯對照表與專屬 Prompt 總覽】\r\n";
+        csv += "序號,商品名稱,分類,核心情感與視覺特徵,建議音樂風格,核心樂器搭配,建議節奏BPM,完整英文AI Prompt\r\n";
+
+        PRODUCTS_DATA.forEach(p => {
+          csv += `${p.id},${escapeCSV(p.name)},${escapeCSV(p.category)},${escapeCSV(p.features)},${escapeCSV(p.genre)},${escapeCSV(p.instruments)},${escapeCSV(p.bpm + " (" + p.bpmNote + ")")},${escapeCSV(p.prompt)}\r\n`;
+        });
+
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", `手機商攝第五週AI配樂手冊_${new Date().toISOString().slice(0, 10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        showToast("已成功匯出 CSV 檔案！");
+      }
+
+      function escapeCSV(str) {
+        if (!str) return '""';
+        const stringVal = String(str).replace(/\r\n/g, " ").replace(/\n/g, " ");
+        if (stringVal.includes(",") || stringVal.includes('"') || stringVal.includes("\n")) {
+          return `"${stringVal.replace(/"/g, '""')}"`;
+        }
+        return stringVal;
+      }
+
+      // Export to PDF Functionality
+      function exportToPDF() {
+        const element = document.getElementById("manual-content");
+        if (!element) return;
+
+        showToast("正在編排產生專屬 PDF 手冊，請稍候...");
+
+        const opt = {
+          margin: [8, 8, 8, 8],
+          filename: `手機商攝第五週實作手冊_CineDimension.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        if (window.html2pdf) {
+          html2pdf().set(opt).from(element).save().then(() => {
+            showToast("PDF 匯出成功！已開始下載");
+          }).catch(err => {
+            console.error("PDF generation failed:", err);
+            window.print();
+          });
+        } else {
+          window.print();
+        }
+      }
+
+      // Download self standalone index.html
+      function downloadSelfHTML() {
+        const fullHTML = "<!doctype html>\n" + document.documentElement.outerHTML;
+        const blob = new Blob([fullHTML], { type: "text/html;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "index.html";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        showToast("已成功下載單一 index.html 檔案！");
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "手機商攝與影像創作 - 隨堂實作手冊",
+  "description": "第五週商品專屬 AI 配樂 Prompt 產生器與 15 秒影音升級指南，支援一鍵複製 Prompt、客製混音計算、互動檢核表、CSV 與 PDF 匯出。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
